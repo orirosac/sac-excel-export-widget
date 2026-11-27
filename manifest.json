@@ -8,14 +8,14 @@
   "vendor": "ORIOR",
   "eula": "",
   "license": "",
-  "webcomponents": [
-    {
-      "kind": "main",
-      "tag": "orior-flat-excel-export",
-      "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js",
-      "integrity": ""
-    }
-  ],
+"webcomponents": [
+  {
+    "kind": "main",
+    "tag": "orior-flat-excel-export",
+    "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js",
+    "integrity": ""
+  }
+],
   "properties": {
     "payload": {
       "type": "string",
