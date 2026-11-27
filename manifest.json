@@ -3,19 +3,19 @@
   "name": "ORIOR Flat Excel Export",
   "description": "Export supplied flat table data with one header row",
   "version": "0.1.0",
-  "id": "com.orior.sac.flat_excel_export",
+  "id": "com.orior.sac.flat.excel.export",
   "newInstancePrefix": "FlatExcelExport",
   "vendor": "ORIOR",
   "eula": "",
   "license": "",
-"webcomponents": [
-  {
-    "kind": "main",
-    "tag": "orior-flat-excel-export",
-    "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js",
-    "integrity": ""
-  }
-],
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "orior-flat-excel-export",
+      "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js",
+      "integrity": "sha256-KdYyohPYF4rWbun8VtlrlCbjljQHE6iyA3cj5SsnIoI="
+    }
+  ],
   "properties": {
     "payload": {
       "type": "string",
