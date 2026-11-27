@@ -2,18 +2,15 @@
 /* ORIOR SAC Flat Excel Export Widget */
 
 (function () {
+  "use strict";
 
   const XLSX_URL =
     "https://orirosac.github.io/sac-excel-export-widget/src/xlsx.full.min.js";
 
   let xlsxLoading = null;
 
-  //====================================================
   // SHEETJS LADEN
-  //====================================================
-
   function loadXLSX() {
-
     if (window.XLSX) {
       return Promise.resolve(window.XLSX);
     }
@@ -23,7 +20,6 @@
     }
 
     xlsxLoading = new Promise((resolve, reject) => {
-
       const script = document.createElement("script");
       script.src = XLSX_URL;
 
@@ -40,15 +36,15 @@
       };
 
       document.head.appendChild(script);
+    }).catch(error => {
+      xlsxLoading = null;
+      throw error;
     });
 
     return xlsxLoading;
   }
 
-  //====================================================
   // WIDGET DESIGN
-  //====================================================
-
   const template = document.createElement("template");
 
   template.innerHTML = `
@@ -77,12 +73,7 @@
     <button type="button">Excel exportieren</button>
   `;
 
-  //====================================================
-  // CUSTOM WIDGET
-  //====================================================
-
   class FlatExcelExport extends HTMLElement {
-
     constructor() {
       super();
 
@@ -101,36 +92,52 @@
       });
     }
 
-    //==================================================
+    // DATEN AUS SAC EMPFANGEN
+    setPayload(payload) {
+      this._payload = payload;
+    }
+
+    // DATEINAMEN SETZEN
+    setFileName(fileName) {
+      this._fileName = fileName || "sac-export.xlsx";
+    }
+
     // SAC EIGENSCHAFTEN
-    //==================================================
-
     onCustomWidgetAfterUpdate(changedProperties) {
-
-      if (Object.prototype.hasOwnProperty.call(
-        changedProperties, "payload"
-      )) {
-        this._payload = changedProperties.payload;
+      if (
+        Object.prototype.hasOwnProperty.call(
+          changedProperties, "payload"
+        )
+      ) {
+        this.setPayload(changedProperties.payload);
       }
 
-      if (Object.prototype.hasOwnProperty.call(
-        changedProperties, "fileName"
-      )) {
-        this._fileName = changedProperties.fileName;
+      if (
+        Object.prototype.hasOwnProperty.call(
+          changedProperties, "fileName"
+        )
+      ) {
+        this.setFileName(changedProperties.fileName);
       }
     }
 
-    //==================================================
     // EXCEL EXPORT
-    //==================================================
-
     async exportExcel() {
+      if (this._button.disabled) {
+        return;
+      }
 
       this._button.disabled = true;
 
       try {
-
-        const XLSX = await loadXLSX();
+        if (
+          this._payload == null ||
+          this._payload === ""
+        ) {
+          throw new Error(
+            "Keine Exportdaten vorhanden. Bitte zuerst Daten aus SAC übergeben."
+          );
+        }
 
         const payload =
           typeof this._payload === "string"
@@ -153,23 +160,21 @@
           c => c.label || c.key
         );
 
-        // Eine einzige Kopfzeile
+        // EINE GEMEINSAME KOPFZEILE
         const aoa = [headings];
 
         for (const row of payload.rows) {
-
-          aoa.push(keys.map(k => {
-
-            const value = row[k];
+          aoa.push(keys.map(key => {
+            const value = row[key];
 
             if (value == null) {
               return "";
             }
 
-            // Schutz vor Excel-Formeln aus Textwerten
+            // Schutz vor Formel-Injektion
             if (
               typeof value === "string" &&
-              /^[\s]*[=+@-]/.test(value)
+              /^\s*[=+@-]/.test(value)
             ) {
               return "'" + value;
             }
@@ -178,9 +183,9 @@
           }));
         }
 
-        // Excel-Datei erstellen
-        const workbook = XLSX.utils.book_new();
+        const XLSX = await loadXLSX();
 
+        const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.aoa_to_sheet(aoa);
 
         XLSX.utils.book_append_sheet(
@@ -195,7 +200,6 @@
         );
 
       } catch (error) {
-
         console.error("Excel Export Fehler:", error);
 
         this.dispatchEvent(
@@ -207,15 +211,15 @@
         );
 
       } finally {
-
         this._button.disabled = false;
       }
     }
   }
 
-  customElements.define(
-    "orior-flat-excel-export",
-    FlatExcelExport
-  );
-
+  if (!customElements.get("orior-flat-excel-export")) {
+    customElements.define(
+      "orior-flat-excel-export",
+      FlatExcelExport
+    );
+  }
 })();
