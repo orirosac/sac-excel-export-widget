@@ -8,16 +8,31 @@
   "eula": "",
   "license": "",
   "webcomponents": [
-    {"kind": "main", "tag": "orior-flat-excel-export", "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js", "integrity": ""}
+    {
+      "kind": "main",
+      "tag": "orior-flat-excel-export",
+      "url": "https://or irosac.github.io/sac-excel-export-widget/src/main.js",
+      "integrity": ""
+    }
   ],
   "properties": {
-    "payload": {"type": "string", "default": ""},
-    "fileName": {"type": "string", "default": "sac-export.xlsx"}
+    "payload": {
+      "type": "string",
+      "default": ""
+    },
+    "fileName": {
+      "type": "string",
+      "default": "sac-export.xlsx"
+    }
   },
   "methods": {
-    "exportExcel": {"description": "Download supplied rows as XLSX"}
+    "exportExcel": {
+      "description": "Download supplied rows as XLSX"
+    }
   },
   "events": {
-    "onExportError": {"description": "Raised when export fails"}
+    "onExportError": {
+      "description": "Raised when export fails"
+    }
   }
 }
