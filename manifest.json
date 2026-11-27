@@ -3,7 +3,7 @@
   "name": "ORIOR Flat Excel Export",
   "description": "Export supplied flat table data with one header row",
   "version": "0.1.0",
-  "id": "com.orior.sac.flat-excel-export",
+  "id": "com.orior.sac.flat_excel_export",
   "newInstancePrefix": "FlatExcelExport",
   "vendor": "ORIOR",
   "eula": "",
