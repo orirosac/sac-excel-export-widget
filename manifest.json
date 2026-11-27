@@ -1,3 +1,4 @@
+
 {
   "name": "ORIOR Flat Excel Export",
   "description": "Export supplied flat table data with one header row",
@@ -11,7 +12,7 @@
     {
       "kind": "main",
       "tag": "orior-flat-excel-export",
-      "url": "https://or irosac.github.io/sac-excel-export-widget/src/main.js",
+      "url": "https://orirosac.github.io/sac-excel-export-widget/src/main.js",
       "integrity": ""
     }
   ],
