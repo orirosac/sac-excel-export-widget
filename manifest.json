@@ -2,7 +2,7 @@
 {
   "name": "ORIOR Flat Excel Export",
   "description": "Export supplied flat table data with one header row",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "id": "com.orior.sac.flat.excel.export",
   "newInstancePrefix": "FlatExcelExport",
   "vendor": "ORIOR",
@@ -28,10 +28,22 @@
   },
   "methods": {
     "setPayload": {
-      "description": "Set Excel export data"
+      "description": "Set Excel export data",
+      "parameters": [
+        {
+          "name": "payload",
+          "type": "string"
+        }
+      ]
     },
     "setFileName": {
-      "description": "Set Excel file name"
+      "description": "Set Excel file name",
+      "parameters": [
+        {
+          "name": "fileName",
+          "type": "string"
+        }
+      ]
     },
     "exportExcel": {
       "description": "Download supplied rows as XLSX"
