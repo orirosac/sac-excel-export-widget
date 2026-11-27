@@ -1,0 +1,23 @@
+{
+  "name": "ORIOR Flat Excel Export",
+  "description": "Export supplied flat table data with one header row",
+  "version": "0.1.0",
+  "id": "com.orior.sac.flat-excel-export",
+  "newInstancePrefix": "FlatExcelExport",
+  "vendor": "ORIOR",
+  "eula": "",
+  "license": "",
+  "webcomponents": [
+    {"kind": "main", "tag": "orior-flat-excel-export", "url": "https://YOUR-HTTPS-HOST/src/main.js", "integrity": ""}
+  ],
+  "properties": {
+    "payload": {"type": "string", "default": ""},
+    "fileName": {"type": "string", "default": "sac-export.xlsx"}
+  },
+  "methods": {
+    "exportExcel": {"description": "Download supplied rows as XLSX"}
+  },
+  "events": {
+    "onExportError": {"description": "Raised when export fails"}
+  }
+}

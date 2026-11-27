@@ -1,0 +1,12 @@
+{
+  "columns": [
+    {"key": "STICHTAG", "label": "Stichtag"},
+    {"key": "UNIT", "label": "Unit"},
+    {"key": "NAME", "label": "Name"},
+    {"key": "FTE", "label": "FTE"}
+  ],
+  "rows": [
+    {"STICHTAG": "2025-01-31", "UNIT": "1200", "NAME": "Muster", "FTE": 1},
+    {"STICHTAG": "2025-02-28", "UNIT": "1200", "NAME": "Beispiel", "FTE": 0.8}
+  ]
+}
