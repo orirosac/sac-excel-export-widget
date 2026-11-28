@@ -1,5 +1,5 @@
 
-/* ORIOR SAC Flat Excel Export Widget */
+/* SAC Flat Excel Export Widget */
 
 (function () {
   "use strict";
@@ -11,6 +11,7 @@
 
   // SHEETJS LADEN
   function loadXLSX() {
+
     if (window.XLSX) {
       return Promise.resolve(window.XLSX);
     }
@@ -20,6 +21,7 @@
     }
 
     xlsxLoading = new Promise((resolve, reject) => {
+
       const script = document.createElement("script");
       script.src = XLSX_URL;
 
@@ -27,7 +29,7 @@
         if (window.XLSX) {
           resolve(window.XLSX);
         } else {
-          reject(new Error("SheetJS konnte nicht initialisiert werden."));
+          reject(new Error("SheetJS konnte nicht geladen werden."));
         }
       };
 
@@ -36,6 +38,7 @@
       };
 
       document.head.appendChild(script);
+
     }).catch(error => {
       xlsxLoading = null;
       throw error;
@@ -73,11 +76,14 @@
     <button type="button">Excel exportieren</button>
   `;
 
+  // CUSTOM WIDGET
   class FlatExcelExport extends HTMLElement {
+
     constructor() {
       super();
 
       this.attachShadow({ mode: "open" });
+
       this.shadowRoot.appendChild(
         template.content.cloneNode(true)
       );
@@ -92,18 +98,19 @@
       });
     }
 
-    // DATEN AUS SAC EMPFANGEN
+    // DATEN AUS SAC
     setPayload(payload) {
       this._payload = payload;
     }
 
-    // DATEINAMEN SETZEN
+    // DATEINAME AUS SAC
     setFileName(fileName) {
       this._fileName = fileName || "sac-export.xlsx";
     }
 
     // SAC EIGENSCHAFTEN
     onCustomWidgetAfterUpdate(changedProperties) {
+
       if (
         Object.prototype.hasOwnProperty.call(
           changedProperties, "payload"
@@ -123,6 +130,7 @@
 
     // EXCEL EXPORT
     async exportExcel() {
+
       if (this._button.disabled) {
         return;
       }
@@ -130,13 +138,9 @@
       this._button.disabled = true;
 
       try {
-        if (
-          this._payload == null ||
-          this._payload === ""
-        ) {
-          throw new Error(
-            "Keine Exportdaten vorhanden. Bitte zuerst Daten aus SAC übergeben."
-          );
+
+        if (!this._payload) {
+          throw new Error("Keine Exportdaten vorhanden.");
         }
 
         const payload =
@@ -149,9 +153,7 @@
           !Array.isArray(payload.columns) ||
           !Array.isArray(payload.rows)
         ) {
-          throw new Error(
-            "Ungültige Exportdaten. Erwartet: columns und rows."
-          );
+          throw new Error("Ungueltige Exportdaten.");
         }
 
         const keys = payload.columns.map(c => c.key);
@@ -160,29 +162,36 @@
           c => c.label || c.key
         );
 
-        // EINE GEMEINSAME KOPFZEILE
         const aoa = [headings];
 
         for (const row of payload.rows) {
+
           aoa.push(keys.map(key => {
+
             const value = row[key];
 
             if (value == null) {
               return "";
             }
 
-            // Schutz vor Formel-Injektion
-            if (
-              typeof value === "string" &&
-              /^\s*[=+@-]/.test(value)
-            ) {
-              return "'" + value;
+            if (typeof value === "string") {
+
+              // EINZELNER BINDESTRICH
+              if (value.trim() === "-") {
+                return "-";
+              }
+
+              // EXCEL-FORMELSCHUTZ
+              if (/^\s*[=+@-]/.test(value)) {
+                return "'" + value;
+              }
             }
 
             return value;
           }));
         }
 
+        // EXCEL ERSTELLEN
         const XLSX = await loadXLSX();
 
         const workbook = XLSX.utils.book_new();
@@ -194,12 +203,26 @@
           "Export"
         );
 
-        XLSX.writeFile(
-          workbook,
-          this._fileName || "sac-export.xlsx"
-        );
+        // AKTUELLES DATUM
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+
+        const dateString = `${year}-${month}-${day}`;
+
+        // DATEINAME OHNE DOPPELTES .XLSX
+        const baseName = (this._fileName || "sac-export.xlsx")
+          .replace(/\.xlsx$/i, "");
+
+        const fileName = `${baseName}_${dateString}.xlsx`;
+
+        // DOWNLOAD
+        XLSX.writeFile(workbook, fileName);
 
       } catch (error) {
+
         console.error("Excel Export Fehler:", error);
 
         this.dispatchEvent(
@@ -222,4 +245,5 @@
       FlatExcelExport
     );
   }
+
 })();
